@@ -1,3 +1,6 @@
+data/DJI_*
+.DS_STORE
+
 # Logs
 logs
 *.log
