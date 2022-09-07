@@ -95,10 +95,6 @@ module.exports = {
                         }
                     }
                 ]
-            },
-            {
-                test: /\.SRT$/i,
-                use: 'raw-loader',
             }
         ]
     },

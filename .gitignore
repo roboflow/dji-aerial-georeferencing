@@ -1,4 +1,5 @@
 data/DJI_*
+data/*.csv
 .DS_STORE
 
 # Logs
