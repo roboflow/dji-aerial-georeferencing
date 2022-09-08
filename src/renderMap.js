@@ -2,6 +2,7 @@ const mapboxgl = require('mapbox-gl');
 window.mapboxgl = mapboxgl;
 
 const Papa = require('papaparse');
+const { LazyResult } = require('postcss');
 
 var renderMap = async function(videoFile, flightLogFile) {
     var mapTemplate = require(__dirname + "/templates/map.hbs");
@@ -92,6 +93,30 @@ var renderMap = async function(videoFile, flightLogFile) {
         ], {
             padding: 150
         });
+
+        var videoSource = map.getSource('video');
+        var videoLayer = map.getLayer('video');
+        var detectFrame = function() {
+            var video = videoSource.video;
+            if(video) {
+                video.playbackRate = 4.0;
+
+                var frame = Math.floor(video.currentTime * 10);
+                var observation = videoObservations[frame%videoObservations.length];
+                console.log(video.currentTime, frame, observation);
+                
+                videoSource.setCoordinates([
+                    [observation.longitude+0.0007, observation.latitude - 0.0007],
+                    [observation.longitude+0.0007, observation.latitude + 0.0007],
+                    [observation.longitude-0.0007, observation.latitude + 0.0007],
+                    [observation.longitude-0.0007, observation.latitude - 0.0007]
+                ])
+            }
+
+            requestAnimationFrame(detectFrame);
+        };
+
+        detectFrame();
     });
         
     map.on('click', () => {
