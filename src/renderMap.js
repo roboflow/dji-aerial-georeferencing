@@ -1,10 +1,11 @@
 const mapboxgl = require('mapbox-gl');
 window.mapboxgl = mapboxgl;
 
-var renderMap = function(videoFile, flightLogFile) {
+var renderMap = async function(videoFile, flightLogFile) {
     var mapTemplate = require(__dirname + "/templates/map.hbs");
     $('body').html(mapTemplate());
 
+    // var video = await loadVideo();
     mapboxgl.accessToken = 'pk.eyJ1IjoieWVsZGFyYnkiLCJhIjoiY2w3czRlcG5qMGxvbDNxbnVoOTUzeW9nNCJ9.RKnzgCuuLaaFzcFsuZWdFQ';
     const videoStyle = {
         'version': 8,
@@ -16,10 +17,7 @@ var renderMap = function(videoFile, flightLogFile) {
             },
             'video': {
                 'type': 'video',
-                'urls': [
-                    'https://static-assets.mapbox.com/mapbox-gl-js/drone.mp4',
-                    'https://static-assets.mapbox.com/mapbox-gl-js/drone.webm'
-                ],
+                'urls': [URL.createObjectURL(videoFile)],
                 'coordinates': [
                     [-122.51596391201019, 37.56238816766053],
                     [-122.51467645168304, 37.56410183312965],
