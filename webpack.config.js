@@ -73,11 +73,7 @@ module.exports = {
         rules: [
             {
                 test: /\.hbs$/,
-                loader: "handlebars-loader",
-                options: {
-                    helperDirs: [__dirname + "/src/scripts/helpers"],
-                    knownHelpersOnly: false
-                }
+                loader: "handlebars-loader"
             },
             {
                 test: /\.s?css$/,

@@ -5,7 +5,15 @@ const mapboxgl = require('mapbox-gl');
 window.mapboxgl = mapboxgl;
 
 $(function() {
-    console.log("TEST");
+    function setupDrop() {
+        var dropTemplate = require(__dirname + "/templates/drop.hbs");
+        $('body').html(dropTemplate());
+    }
+
+    setupDrop();
+
+    if(true) return;
+
     mapboxgl.accessToken = 'pk.eyJ1IjoieWVsZGFyYnkiLCJhIjoiY2w3czRlcG5qMGxvbDNxbnVoOTUzeW9nNCJ9.RKnzgCuuLaaFzcFsuZWdFQ';
     const videoStyle = {
         'version': 8,
@@ -58,6 +66,8 @@ $(function() {
         bearing: -96,
         style: videoStyle
     });
+
+    window.map = map;
         
     let playingVideo = true;
         

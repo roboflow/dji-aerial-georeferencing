@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+    min-width: 100%;
+    background-color: rgb(244, 246, 248);
+    /*min-width: 680px;*/
+    height: 100%;
+
+    font-family: "Inter", sans-serif;
+}
