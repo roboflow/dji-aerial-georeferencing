@@ -28,6 +28,12 @@ var plugins = [
         template: path.resolve(__dirname, "src", "index.html"),
         cache: false,
         inject: true
+    }),
+    new webpack.ProvidePlugin({
+        Buffer: ['buffer', 'Buffer'],
+    }),
+    new webpack.ProvidePlugin({
+        process: 'process/browser',
     })
 ];
 
@@ -61,7 +67,11 @@ module.exports = {
         "mapboxgl": "mapboxgl",
     },
     resolve: {
-        extensions: [".js"]
+        extensions: [".js"],
+        fallback: {
+            "stream": require.resolve("stream-browserify"),
+            "buffer": require.resolve("buffer")
+        }
     },
     entry: {
         main: [
