@@ -4,6 +4,13 @@ window.mapboxgl = mapboxgl;
 const Papa = require('papaparse');
 const { LazyResult } = require('postcss');
 
+const turf = {
+    point: require('@turf/helpers').point,
+    rhumbDestination: require('@turf/rhumb-destination').default
+};
+
+window.turf = turf;
+
 var renderMap = async function(videoFile, flightLogFile) {
     var mapTemplate = require(__dirname + "/templates/map.hbs");
     $('body').html(mapTemplate());
@@ -80,7 +87,7 @@ var renderMap = async function(videoFile, flightLogFile) {
                 [(top+bottom)/2-0.0007, (left+right)/2 - 0.0007]
             ]
         });
-    
+
         map.addLayer({
             'id': 'video',
             'type': 'raster',
@@ -96,21 +103,58 @@ var renderMap = async function(videoFile, flightLogFile) {
 
         var videoSource = map.getSource('video');
         var videoLayer = map.getLayer('video');
+
+        var fov = 60; // degrees; via https://mavicpilots.com/threads/measured-field-of-view-for-mavic-air-59%C2%B0-video-69%C2%B0-photo.85228/
+        var fovAtan = Math.atan(fov);
+
+        var prevPrint = 0;
+        var i = 0;
         var detectFrame = function() {
             var video = videoSource.video;
-            if(video) {
+            window.video = video;
+            if(video && video.videoWidth) {
                 video.playbackRate = 4.0;
+
+                var videoWidth = video.videoWidth;
+                var videoHeight = video.videoHeight;
 
                 var frame = Math.floor(video.currentTime * 10);
                 var observation = videoObservations[frame%videoObservations.length];
-                console.log(video.currentTime, frame, observation);
                 
-                videoSource.setCoordinates([
-                    [observation.longitude+0.0007, observation.latitude - 0.0007],
-                    [observation.longitude+0.0007, observation.latitude + 0.0007],
-                    [observation.longitude-0.0007, observation.latitude + 0.0007],
-                    [observation.longitude-0.0007, observation.latitude - 0.0007]
-                ])
+                var center = turf.point([observation.longitude, observation.latitude]);
+                
+                var altitude = parseFloat(observation["ascent(feet)"]) * 0.3048; // convert to meters
+                var diagonalDistance = altitude * fovAtan;
+                var distance = diagonalDistance/2;
+
+                var options = {units: 'meters'};
+
+                var bearing = (parseFloat(observation["compass_heading(degrees)"]) - 90) % 360;
+
+                var offset = Math.tan(videoHeight / videoWidth) * 57.2958;
+
+                console.log(i, distance, bearing, offset, (bearing - offset)%360, (bearing + offset)%360, (bearing - offset + 180)%360, (bearing + offset + 180)%360);
+
+                var topLeft = turf.rhumbDestination(center, distance, (bearing-offset+180)%360-180, options).geometry.coordinates;
+                var topRight = turf.rhumbDestination(center, distance, (bearing+offset+180)%360-180, options).geometry.coordinates;
+                var bottomRight = turf.rhumbDestination(center, distance, (bearing-offset+180+180)%360-180, options).geometry.coordinates;
+                var bottomLeft = turf.rhumbDestination(center, distance, (bearing+offset+180+180)%360-180, options).geometry.coordinates;
+                
+                var coords = [
+                    topRight,
+                    bottomRight,
+                    bottomLeft,
+                    topLeft
+                ];
+
+                console.log(coords);
+
+                // if(prevPrint++ >= 100) {
+                //     console.log(center.geometry.coordinates, bearing, coords, observation)
+                //     prevPrint = 0;
+                // }
+
+                videoSource.setCoordinates(coords);
             }
 
             requestAnimationFrame(detectFrame);
@@ -118,17 +162,6 @@ var renderMap = async function(videoFile, flightLogFile) {
 
         detectFrame();
     });
-        
-    map.on('click', () => {
-        playingVideo = !playingVideo;
-            
-        if (playingVideo) {
-            map.getSource('video').play();
-        } else {
-            map.getSource('video').pause();
-        }
-    });
-};
 
 const readCSVFile = function(file) {
     return new Promise(function(resolve) {
