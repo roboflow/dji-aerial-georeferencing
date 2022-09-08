@@ -25,7 +25,7 @@ var plugins = [
         ]
     }),
     new HtmlWebpackPlugin({
-        filename: "index.html",
+        template: path.resolve(__dirname, "src", "index.html"),
         cache: false,
         inject: true
     })
@@ -56,6 +56,9 @@ module.exports = {
         splitChunks: {
             chunks: "all"
         }
+    },
+    externals: {
+        "mapboxgl": "mapboxgl",
     },
     resolve: {
         extensions: [".js"]
