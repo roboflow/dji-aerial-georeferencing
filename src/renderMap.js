@@ -1,6 +1,8 @@
 const mapboxgl = require('mapbox-gl');
 window.mapboxgl = mapboxgl;
 
+require('mapbox-gl/dist/mapbox-gl.css');
+
 const Papa = require('papaparse');
 const { LazyResult } = require('postcss');
 
@@ -109,6 +111,8 @@ var renderMap = async function(videoFile, flightLogFile) {
 
         var prevPrint = 0;
         var i = 0;
+        var detectionInFlight = false;
+        var lastDetection = 0;
         var detectFrame = function() {
             var video = videoSource.video;
             window.video = video;
@@ -118,9 +122,11 @@ var renderMap = async function(videoFile, flightLogFile) {
                 var videoWidth = video.videoWidth;
                 var videoHeight = video.videoHeight;
 
+                var currentTime = video.currentTime;
+
                 var frame = Math.floor(video.currentTime * 10);
                 var observation = videoObservations[frame%videoObservations.length];
-                
+
                 var center = turf.point([observation.longitude, observation.latitude]);
                 
                 var altitude = parseFloat(observation["ascent(feet)"]) * 0.3048; // convert to meters
@@ -132,8 +138,6 @@ var renderMap = async function(videoFile, flightLogFile) {
                 var bearing = (parseFloat(observation["compass_heading(degrees)"]) - 90) % 360;
 
                 var offset = Math.tan(videoHeight / videoWidth) * 57.2958;
-
-                console.log(i, distance, bearing, offset, (bearing - offset)%360, (bearing + offset)%360, (bearing - offset + 180)%360, (bearing + offset + 180)%360);
 
                 var topLeft = turf.rhumbDestination(center, distance, (bearing-offset+180)%360-180, options).geometry.coordinates;
                 var topRight = turf.rhumbDestination(center, distance, (bearing+offset+180)%360-180, options).geometry.coordinates;
@@ -147,21 +151,34 @@ var renderMap = async function(videoFile, flightLogFile) {
                     topLeft
                 ];
 
-                console.log(coords);
-
-                // if(prevPrint++ >= 100) {
-                //     console.log(center.geometry.coordinates, bearing, coords, observation)
-                //     prevPrint = 0;
-                // }
-
                 videoSource.setCoordinates(coords);
-            }
 
+                if(window.model && !detectionInFlight && Date.now() - lastDetection >= 200) {
+                    detectionInFlight = true;
+                    video.pause();
+                    window.model.detect(video).then(function(predictions) {
+                        console.log(predictions);
+                        if(predictions.length) {
+                            var marker = new mapboxgl.Marker()
+                                .setLngLat([observation.longitude, observation.latitude])
+                                .addTo(map);
+
+                            console.log("ADD MARKER AT", [observation.longitude, observation.latitude]);
+                        }
+                    }).finally(function() {
+                        detectionInFlight = false;
+                        lastDetection = Date.now();
+                        video.play();
+                    });
+                }
+            }
+            
             requestAnimationFrame(detectFrame);
         };
 
         detectFrame();
     });
+};
 
 const readCSVFile = function(file) {
     return new Promise(function(resolve) {
@@ -176,6 +193,6 @@ const readCSVFile = function(file) {
         }
         reader.readAsText(file);
     });
-}
+};
 
 module.exports = renderMap;
