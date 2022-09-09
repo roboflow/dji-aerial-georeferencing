@@ -18,11 +18,12 @@ $(function() {
             })
             .load({
                 model: "aerial-solar-panels",
-                version: 4,
+                version: 5,
             })
             .then(function(m) {
                 m.configure({
-                    threshold: 0.9
+                    threshold: 0.9,
+                    overlap: 0.5
                 });
     
                 window.model = m;

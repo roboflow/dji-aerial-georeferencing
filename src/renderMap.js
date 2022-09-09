@@ -113,6 +113,9 @@ var renderMap = async function(videoFile, flightLogFile) {
         var i = 0;
         var detectionInFlight = false;
         var lastDetection = 0;
+
+        var markers = [];
+
         var detectFrame = function() {
             var video = videoSource.video;
             window.video = video;
@@ -137,7 +140,7 @@ var renderMap = async function(videoFile, flightLogFile) {
 
                 var bearing = (parseFloat(observation["compass_heading(degrees)"]) - 90) % 360;
 
-                var offset = Math.tan(videoHeight / videoWidth) * 57.2958;
+                var offset = Math.atan(videoHeight / videoWidth) * 57.2958;
 
                 var topLeft = turf.rhumbDestination(center, distance, (bearing-offset+180)%360-180, options).geometry.coordinates;
                 var topRight = turf.rhumbDestination(center, distance, (bearing+offset+180)%360-180, options).geometry.coordinates;
@@ -158,13 +161,81 @@ var renderMap = async function(videoFile, flightLogFile) {
                     video.pause();
                     window.model.detect(video).then(function(predictions) {
                         console.log(predictions);
+
+                        // predictions = [
+                        //     {
+                        //         bbox: {
+                        //             x: 0,
+                        //             y: 0
+                        //         },
+                        //         color: 'red'
+                        //     },
+                        //     {
+                        //         bbox: {
+                        //             x: videoWidth / 4,
+                        //             y: videoHeight / 4
+                        //         },
+                        //         color: 'yellow'
+                        //     },
+                        //     {
+                        //         bbox: {
+                        //             x: videoWidth / 2,
+                        //             y: videoHeight / 2
+                        //         },
+                        //     },
+                        //     {
+                        //         bbox: {
+                        //             x: videoWidth * 3 / 4,
+                        //             y: videoHeight * 3 / 4
+                        //         },
+                        //     },
+                        //     {
+                        //         bbox: {
+                        //             x: videoWidth,
+                        //             y: videoHeight
+                        //         },
+                        //         color: 'green'
+                        //     }
+                        // ];
+
                         if(predictions.length) {
-                            var marker = new mapboxgl.Marker()
-                                .setLngLat([observation.longitude, observation.latitude])
+                            _.each(markers, function(marker) {
+                                marker.remove();
+                            });
+                        }
+
+                        _.each(predictions, function(p) {
+                            var normalized = [p.bbox.y - videoHeight / 2, p.bbox.x - videoWidth / 2];
+
+                            var quadrant = 0;
+                            if(normalized[1] > 0 && normalized[0] > 0) {
+                                quadrant = 0;
+                            } else if(normalized[1] >= 0 && normalized[0] <= 0) {
+                                quadrant = 0;
+                            } else if(normalized[1] < 0 && normalized[0] <= 0) {
+                                quadrant = 2;
+                            } else if(normalized[1] <= 0 && normalized[0] > 0) {
+                                quadrant = 2;
+                            }
+
+                            var quadrantOffset = quadrant * 90 + 180;
+
+                            var distanceFromCenterInPixels = Math.sqrt((videoWidth/2-p.bbox.x)*(videoWidth/2-p.bbox.x)+(videoHeight/2-p.bbox.y)*(videoHeight/2-p.bbox.y));
+                            var diagonalDistanceInPixels = Math.sqrt(videoWidth*videoWidth + videoHeight*videoHeight);
+                            var percentOfDiagonal = distanceFromCenterInPixels / diagonalDistanceInPixels;
+                            var distance = percentOfDiagonal * diagonalDistance; // in meters
+
+                            var angle = Math.atan(normalized[0]/(normalized[1]||0.000001)) * 57.2958;
+                            var point = turf.rhumbDestination(center, distance, (bearing + quadrantOffset + angle)%360, options).geometry.coordinates;
+
+                            var marker = new mapboxgl.Marker({ color: p.color || 'black' })
+                                .setLngLat(point)
                                 .addTo(map);
 
-                            console.log("ADD MARKER AT", [observation.longitude, observation.latitude]);
-                        }
+                            markers.push(marker);
+
+                            console.log("ADD MARKER AT", normalized, distance, bearing, angle, quadrantOffset);
+                        });
                     }).finally(function() {
                         detectionInFlight = false;
                         lastDetection = Date.now();
