@@ -49,6 +49,7 @@
         "webpack-livereload-plugin": "^3.0.1"
     },
     "dependencies": {
+        "@turf/distance": "^6.5.0",
         "@turf/helpers": "^6.5.0",
         "@turf/rhumb-destination": "^6.5.0",
         "@turf/transform-rotate": "^6.5.0",

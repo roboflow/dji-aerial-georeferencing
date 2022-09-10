@@ -8,7 +8,8 @@ const { LazyResult } = require('postcss');
 
 const turf = {
     point: require('@turf/helpers').point,
-    rhumbDestination: require('@turf/rhumb-destination').default
+    rhumbDestination: require('@turf/rhumb-destination').default,
+    distance: require('@turf/distance').default
 };
 
 window.turf = turf;
@@ -100,7 +101,7 @@ var renderMap = async function(videoFile, flightLogFile) {
             [top, left],
             [bottom, right]
         ], {
-            padding: 150
+            padding: 50
         });
 
         var videoSource = map.getSource('video');
@@ -115,6 +116,7 @@ var renderMap = async function(videoFile, flightLogFile) {
         var lastDetection = 0;
 
         var markers = [];
+        var foundPoints = [];
 
         var detectFrame = function() {
             var video = videoSource.video;
@@ -160,7 +162,7 @@ var renderMap = async function(videoFile, flightLogFile) {
                     detectionInFlight = true;
                     video.pause();
                     window.model.detect(video).then(function(predictions) {
-                        console.log(predictions);
+                        // console.log(predictions);
 
                         // predictions = [
                         //     {
@@ -198,11 +200,11 @@ var renderMap = async function(videoFile, flightLogFile) {
                         //     }
                         // ];
 
-                        if(predictions.length) {
-                            _.each(markers, function(marker) {
-                                marker.remove();
-                            });
-                        }
+                        // if(predictions.length) {
+                        //     _.each(markers, function(marker) {
+                        //         marker.remove();
+                        //     });
+                        // }
 
                         _.each(predictions, function(p) {
                             var normalized = [p.bbox.y - videoHeight / 2, p.bbox.x - videoWidth / 2];
@@ -226,15 +228,44 @@ var renderMap = async function(videoFile, flightLogFile) {
                             var distance = percentOfDiagonal * diagonalDistance; // in meters
 
                             var angle = Math.atan(normalized[0]/(normalized[1]||0.000001)) * 57.2958;
-                            var point = turf.rhumbDestination(center, distance, (bearing + quadrantOffset + angle)%360, options).geometry.coordinates;
+                            var point = turf.rhumbDestination(center, distance, (bearing + quadrantOffset + angle)%360, options);
 
-                            var marker = new mapboxgl.Marker({ color: p.color || 'black' })
-                                .setLngLat(point)
-                                .addTo(map);
+                            var duplicate = _.find(foundPoints, function(p, i) {
+                                // if within 30 meters, combine
+                                var distanceFromPoint = turf.distance(point, p.location, {units: 'kilometers'});
+                                if(distanceFromPoint < 20/1000) {
+                                    p.points.push(point.geometry.coordinates);
+                                    var location = [0, 0];
+                                    _.each(p.points, function(point) {
+                                        location[0] += point[0];
+                                        location[1] += point[1];
+                                    });
+                                    location[0] = location[0]/p.points.length;
+                                    location[1] = location[1]/p.points.length;
+                                    p.location = turf.point(location);
 
-                            markers.push(marker);
+                                    if(!p.marker && p.points.length >= 2) {
+                                        var marker = new mapboxgl.Marker()
+                                            .setLngLat(location)
+                                            .addTo(map);
 
-                            console.log("ADD MARKER AT", normalized, distance, bearing, angle, quadrantOffset);
+                                        markers.push(marker);
+                                        p.marker = marker;
+                                    } else if(p.marker) {
+                                        p.marker.setLngLat(location);
+                                    }
+
+                                    return true;
+                                }
+                            });
+
+                            if(!duplicate) {
+                                foundPoints.push({
+                                    location: point,
+                                    points: [point.geometry.coordinates],
+                                    marker: null
+                                });
+                            }
                         });
                     }).finally(function() {
                         detectionInFlight = false;
