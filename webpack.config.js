@@ -39,7 +39,7 @@ var plugins = [
 
 if (dev) {
     plugins.push(
-        new HtmlWebpackTagsPlugin({ tags: ["/localhost:35729/livereload.js"], append: false })
+        new HtmlWebpackTagsPlugin({ tags: ["//localhost:35729/livereload.js"], append: false })
     );
 
     plugins.push(new LiveReloadPlugin());
@@ -110,7 +110,6 @@ module.exports = {
     plugins: plugins,
     output: {
         filename: "[name].[contenthash].js",
-        path: path.resolve(__dirname, "dist"),
-        publicPath: "/"
+        path: path.resolve(__dirname, "dist")
     }
 };
