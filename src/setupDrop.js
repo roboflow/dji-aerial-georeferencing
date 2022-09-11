@@ -1,18 +1,21 @@
 var flightLogFile, videoFile;
 
 var setupDrop = function() {
+    // if we've already got our files, switch to map view
     if(flightLogFile && videoFile) {
         var renderMap = require(__dirname + "/renderMap.js");
         renderMap(videoFile, flightLogFile);
         return;
     }
 
+    // render the UI
     var dropTemplate = require(__dirname + "/templates/drop.hbs");
     $('body').html(dropTemplate({
         flightLogFile: flightLogFile,
         videoFile: videoFile
     }));
 
+    // setup click + drag & drop listeners
     $('#videoButton').click(function() {
         $('#videoInput').click();
     });

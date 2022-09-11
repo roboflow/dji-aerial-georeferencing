@@ -6,8 +6,17 @@ html,
 body {
     min-width: 100%;
     background-color: rgb(244, 246, 248);
-    /*min-width: 680px;*/
     height: 100%;
 
     font-family: "Inter", sans-serif;
+
+    margin: 0;
+    padding: 0;
+}
+
+#map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
 }
