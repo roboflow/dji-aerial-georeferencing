@@ -5,7 +5,7 @@ const ROBOFLOW_SETTINGS = {
                                     // or train your own at https://app.roboflow.com
     version: 5, // use the version of your model with the best results
 
-    threshold: 0.9, // adjust the confidence threshold upwards if you're getting false positives, downwards if it's missing predictions
+    threshold: 0.6, // adjust the confidence threshold upwards if you're getting false positives, downwards if it's missing predictions
     overlap: 0.5 // how much predictions can overlap each other; not too important here since we combine nearby predictions into a single marker
 };
 
