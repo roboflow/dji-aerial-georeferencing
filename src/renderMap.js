@@ -4,7 +4,10 @@ const CONFIG = {
     mapboxAccessToken: 'pk.eyJ1IjoieWVsZGFyYnkiLCJhIjoiY2w3czRlcG5qMGxvbDNxbnVoOTUzeW9nNCJ9.RKnzgCuuLaaFzcFsuZWdFQ',
 
     // if detections are closer than this constant, combine them into a single marker
-    MIN_SEPARATION_OF_DETECTIONS_IN_METERS: 20
+    MIN_SEPARATION_OF_DETECTIONS_IN_METERS: 20,
+
+    // wait until a detection is made on this number of distinct frames before showing the marker
+    MIN_DETECTIONS_TO_MAKE_VISIBLE: 2
 }
 
 // Dependency for map rendering
@@ -230,7 +233,7 @@ var renderMap = async function(videoFile, flightLogFile) {
 
                                 // only show a panel if it has been detected at least twice
                                 // (this prevents noisy predictions from clogging up the map)
-                                if(!p.marker && p.points.length >= 2) {
+                                if(!p.marker && p.points.length >= CONFIG.MIN_DETECTIONS_TO_MAKE_VISIBLE) {
                                     var marker = new mapboxgl.Marker()
                                         .setLngLat(location)
                                         .addTo(map);
