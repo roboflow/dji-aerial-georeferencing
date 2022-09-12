@@ -7,7 +7,7 @@ const CONFIG = {
     MIN_SEPARATION_OF_DETECTIONS_IN_METERS: 20,
 
     // wait until a detection is made on this number of distinct frames before showing the marker
-    MIN_DETECTIONS_TO_MAKE_VISIBLE: 2
+    MIN_DETECTIONS_TO_MAKE_VISIBLE: 3
 }
 
 // Dependency for map rendering
