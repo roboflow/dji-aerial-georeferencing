@@ -122,8 +122,8 @@ var renderMap = async function(videoFile, flightLogFile) {
 
         var videoSource = map.getSource('video');
         
-        var fov = 60; // drone camera field of view in degrees; via https://mavicpilots.com/threads/measured-field-of-view-for-mavic-air-59%C2%B0-video-69%C2%B0-photo.85228/
-        var fovAtan = Math.atan(fov); // multiply by altitude to get distance across the video's diagonal
+        var fov = 59 * Math.PI / 180; // drone camera field of view in radians; via https://mavicpilots.com/threads/measured-field-of-view-for-mavic-air-59%C2%B0-video-69%C2%B0-photo.85228/
+        var fovAtan = Math.tan(fov); // multiply by altitude to get distance across the video's diagonal
 
         // used to throttle the ML code so it doesn't make the display laggy
         var detectionInFlight = false;
@@ -167,7 +167,7 @@ var renderMap = async function(videoFile, flightLogFile) {
             // the direction the drone is pointed
             var bearing = (parseFloat(observation["compass_heading(degrees)"]) - 90) % 360;
             // the number of degrees the top corners of the video are offset from the drone heading
-            var offset = Math.atan(videoHeight / videoWidth) * 57.2958;
+            var offset = Math.atan(videoHeight / videoWidth) * 180 / Math.PI;
 
             // calculate the GPS coordinates of the video's four corners by starting at the drone's location and
             // traveling `distance` meters in the direction of that corner
@@ -207,7 +207,7 @@ var renderMap = async function(videoFile, flightLogFile) {
                         var percentOfDiagonal = distanceFromCenterInPixels / diagonalDistanceInPixels;
                         var distance = percentOfDiagonal * diagonalDistance; // in meters
 
-                        var angle = Math.atan(normalized[0]/(normalized[1]||0.000001)) * 57.2958;
+                        var angle = Math.atan(normalized[0]/(normalized[1]||0.000001)) * 180 / Math.PI;
                         // if the detection is in the right half of the frame we need to rotate it 180 degrees
                         if(normalized[1] >= 0) angle += 180;
 
