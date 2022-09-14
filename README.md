@@ -8,9 +8,11 @@ https://user-images.githubusercontent.com/870796/189461690-122f4e64-a66e-40f0-ac
 
 The project is [deployed to Github Pages here](https://roboflow-ai.github.io/dji-aerial-georeferencing/) and you can test it out with [this sample video and flight log](https://drive.google.com/drive/folders/1m0lmYyLEQJiaykf821rYtyRvlO5Q_SAf).
 
+If you have your own Drone video you'd like to use, [follow the instructions in the blog post to pull your detailed flight log from Airdata](https://blog.roboflow.com/georeferencing-drone-videos/).
+
 ## Resources
 
-* A blog post about how this works is in progress; check back soon.
+* Accompanying Blog Post: [Georeferencing Objects in Drone Videos](https://blog.roboflow.com/georeferencing-drone-videos/)
 * Try the [aerial solar panels pre-trained computer vision model](https://universe.roboflow.com/brad-dwyer/aerial-solar-panels/model/5) in your browser on [Roboflow Universe](https://universe.roboflow.com)
 * Browse other [Aerial Imagery Datasets and Pre-Trained Models](https://universe.roboflow.com/browse/aerial)
 * [Train Your Own Computer Vision Model](https://docs.roboflow.com/quick-start) to use with this repo
