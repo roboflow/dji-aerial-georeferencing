@@ -1,6 +1,8 @@
-# DJI Aerial Georeferencing with Computer Vision
+<img src="https://user-images.githubusercontent.com/870796/190517543-96f85ea2-55d0-4f3f-a1d6-18c926f8c8f5.png" data-canonical-src="https://user-images.githubusercontent.com/870796/190517543-96f85ea2-55d0-4f3f-a1d6-18c926f8c8f5.png" width="640" />
 
-This project takes a video from a DJI Mavic Air 2, combined with its flight log, Mapbox, and a computer vision model trained on Roboflow to find solar panels. It converts the machine learning model's predictions to GPS coordinates and uses them to visualize the recognized panels on a map.
+# Detect and Map Objects of Interest from Drone Videos
+
+This project extracts the location of objects of interest from a drone video and plots them on a map. By combining the video with data from its flight log and a computer vision model trained on [Roboflow](https://roboflow.com), it demonstrates georeferencing a machine learning model's predictions to GPS coordinates and using them to visualize the location of detected solar panels on a map using [Mapbox](https://mapbox.com).
 
 https://user-images.githubusercontent.com/870796/189461690-122f4e64-a66e-40f0-ac4b-68258a8abe7e.mov
 
@@ -49,6 +51,20 @@ Other ideas for how to use this repo:
 * [Tracking human rights violations](https://blog.roboflow.com/computer-vision-for-human-rights/)
 * [Other Aerial Datasets & Models](https://universe.roboflow.com/browse/aerial) to get your gears turning
 
+### Getting Your Flight Log
+
+You can get the detailed flight log from a DJI drone using [Airdata](https://airdata.com). The [sample video and flight log](https://drive.google.com/drive/folders/1m0lmYyLEQJiaykf821rYtyRvlO5Q_SAf) were taken from a DJI Mavic Air 2. Full details are [in the blog post](https://blog.roboflow.com/georeferencing-drone-videos/).
+
+<img width="659" alt="flighlog" src="https://user-images.githubusercontent.com/870796/190518745-278df36e-1866-4e15-9359-667848598557.png">
+
+### Training a Custom Model
+
+If you can't find a pre-trained model that accurately detects your particular object of interest on [Roboflow Universe](https://universe.roboflow.com) you can create a dataset and train your own custom model using [Roboflow](https://roboflow.com).
+
+Roboflow is an end-to-end computer vision platform that has helped over 100,000 developers use computer vision. The easiest way to get started is to [sign up for a free Roboflow account](https://app.roboflow.com) and follow [our quickstart guide](https://docs.roboflow.com/quick-start).
+
+Once you've trained a custom model, update your publishable API Key, model ID, and version in the configuration at the top of [`main.js`](src/main.js).
+
 ## Contributing
 
 Pull requests are welcome to improve this repo. Ideas for improvements that could be made:
@@ -60,3 +76,6 @@ Pull requests are welcome to improve this repo. Ideas for improvements that coul
 * Rendering the flight video and predictions into a single image (patching video frames together)
 * Video controls (play/pause, scrubbing)
 * Option to show the video in a static position vs flying over the flight path
+* Add smoothing to the video positioning to account for the flight-log only having a 100ms resolution
+* Allowing dynamically swapping the model endpoint & version in the UI to easily try other models in the UI without having to change the code
+* Improve the solar panel model or swimming pool model to make better predictions
