@@ -35,6 +35,20 @@ For example, changing the model to `swimming-pool-b6pz4` to use this [swimming p
 
 https://user-images.githubusercontent.com/870796/190296751-02b46989-7e18-4fcb-93c4-67e492cff401.mp4
 
+Other ideas for how to use this repo:
+* [Search & Rescue](https://universe.roboflow.com/lifesparrow/images-25-8/browse?queryText=&pageSize=50&startingIndex=0&browseQuery=true)
+* [Monitoring swimmer safety](https://universe.roboflow.com/yolo-training/man-over-board/browse?queryText=&pageSize=50&startingIndex=0&browseQuery=true) in triathlons
+* Helping governments [identify zoning violations](https://universe.roboflow.com/hruthik-sivakumar/swimming-pool-b6pz4/browse?queryText=&pageSize=50&startingIndex=0&browseQuery=true)
+* Monitoring core infrastructure like pipelines for [potential hazards like excavators and construction equipment](https://universe.roboflow.com/project-ip0vc/final-75vvh/browse?queryText=&pageSize=50&startingIndex=0&browseQuery=true) nearby
+* [Finding people with bonfires](https://universe.roboflow.com/srichandana055-gmail-com/fire-and-smoke-videoo/browse?queryText=&pageSize=50&startingIndex=0&browseQuery=true) in high risk fire areas
+* [Tracking wildlife](https://universe.roboflow.com/elephantdetection-90mt9/newprojectelephant/browse?queryText=&pageSize=50&startingIndex=0&browseQuery=true)
+* Mapping [oil wells](https://universe.roboflow.com/haritha-r/oilwells/browse?queryText=&pageSize=50&startingIndex=0&browseQuery=true)
+* Monitoring [land use and tree cover](https://universe.roboflow.com/treedataset-clsqo/tree-top-view/browse?queryText=&pageSize=50&startingIndex=0&browseQuery=true)
+* [Finding boats](https://universe.roboflow.com/jacob-solawetz/aerial-maritime) fishing in restricted areas
+* Counting [cars in parking lots](https://universe.roboflow.com/swee-xiao-qi/parking-lot-availability/browse?queryText=&pageSize=50&startingIndex=0&browseQuery=true)
+* [Tracking human rights violations](https://blog.roboflow.com/computer-vision-for-human-rights/)
+* [Other Aerial Datasets & Models](https://universe.roboflow.com/browse/aerial) to get your gears turning
+
 ## Contributing
 
 Pull requests are welcome to improve this repo. Ideas for improvements that could be made:
