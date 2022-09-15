@@ -31,6 +31,10 @@ This repo can easily be changed to run any custom model trained with [Roboflow](
 
 There are also some additional configuration options available at the top of [`renderMap.js`](src/renderMap.js).
 
+For example, changing the model to `swimming-pool-b6pz4` to use this [swimming pool computer vision model](https://universe.roboflow.com/hruthik-sivakumar/swimming-pool-b6pz4/model/2) from Roboflow Universe changes the functionality from plotting solar panels to plotting pools:
+
+https://user-images.githubusercontent.com/870796/190296751-02b46989-7e18-4fcb-93c4-67e492cff401.mp4
+
 ## Contributing
 
 Pull requests are welcome to improve this repo. Ideas for improvements that could be made:
