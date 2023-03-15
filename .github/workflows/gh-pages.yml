@@ -1,7 +1,7 @@
-name: NodeJS with Webpack
+name: Build and Deploy
 
 on:
-  pull_request:
+  push:
     branches: [ "main" ]
 
 jobs:
@@ -24,3 +24,9 @@ jobs:
       run: |
         npm install
         npx webpack
+    
+    - name: Deploy to GH Pages 🚀
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: dist
