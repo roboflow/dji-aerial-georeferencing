@@ -9,7 +9,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/roboflow-ai/dji-aerial-georeferencing.git"
+        "url": "git+https://github.com/roboflow/dji-aerial-georeferencing.git"
     },
     "keywords": [
         "computer",
@@ -25,9 +25,9 @@
     "author": "Roboflow",
     "license": "Apache-2.0",
     "bugs": {
-        "url": "https://github.com/roboflow-ai/dji-aerial-georeferencing/issues"
+        "url": "https://github.com/roboflow/dji-aerial-georeferencing/issues"
     },
-    "homepage": "https://github.com/roboflow-ai/dji-aerial-georeferencing#readme",
+    "homepage": "https://github.com/roboflow/dji-aerial-georeferencing#readme",
     "devDependencies": {
         "autoprefixer": "^10.4.8",
         "clean-webpack-plugin": "^3.0.0",
