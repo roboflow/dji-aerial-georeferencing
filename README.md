@@ -8,7 +8,7 @@ https://user-images.githubusercontent.com/870796/189461690-122f4e64-a66e-40f0-ac
 
 ## Try It in Your Browser
 
-The project is [deployed to Github Pages here](https://roboflow-ai.github.io/dji-aerial-georeferencing/) and you can test it out with [this sample video and flight log](https://drive.google.com/drive/folders/1m0lmYyLEQJiaykf821rYtyRvlO5Q_SAf).
+The project is [deployed to Github Pages here](https://roboflow.github.io/dji-aerial-georeferencing/) and you can test it out with [this sample video and flight log](https://drive.google.com/drive/folders/1m0lmYyLEQJiaykf821rYtyRvlO5Q_SAf).
 
 If you have your own Drone video you'd like to use, [follow the instructions in the blog post to pull your detailed flight log from Airdata](https://blog.roboflow.com/georeferencing-drone-videos/).
 
